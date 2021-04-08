@@ -1,54 +1,67 @@
 <template>
   <div>
     <h1>Dashboard</h1>
-    <v-data-table
-      :headers="headers"
-      :items="employees"
-      :items-per-page="5"
-      class="elavation-1"
-      @click:row="selectRow"
-    >
-    </v-data-table>
-    <v-snackbar v-model="snackbar"
-      >You have selected {{ selectedEmployee.name }} ({{ selectedEmployee.title }})
-      <v-btn color="pink" text @click="snackbar = false">Close</v-btn>
+
+    <SalesGraph v-for="sale in sales" :key="`${sale.title}`" :sale="sale" />
+
+    <StatisticCard
+      v-for="statistic in statistics"
+      :key="`${statistic.title}`"
+      :statistic="statistic"
+    />
+
+    <EmployeesTable :employees="employees" @select-employee="setEmployee" />
+
+    <EventTimeline :timeline="timeline" />
+
+    <v-snackbar v-model="snackbar">
+      You have selected {{ selectedEmployee.name }},
+      {{ selectedEmployee.title }}
+      <v-btn color="pink" text @click="snackbar = false">
+        Close
+      </v-btn>
     </v-snackbar>
   </div>
 </template>
 
 <script>
-import employeesData from '@/data/employees.json'
+import EmployeesTable from '../components/EmployeesTable'
+import EventTimeline from '../components/EventTimeline'
+import SalesGraph from '../components/SalesGraph'
+import StatisticCard from '../components/StatisticCard'
+
+import employeesData from '../data/employees.json'
+import timelineData from '../data/timeline.json'
+import salesData from '../data/sales.json'
+import statisticsData from '../data/statistics.json'
 
 export default {
-  name: "DashboardPage",
-  methods: {
-    selectRow(event) {
-      this.snackbar = true;
-      this.selectedEmployee.name = event.name;
-      this.selectedEmployee.title = event.title;
-    },
+  name: 'DashboardPage',
+  components: {
+    EmployeesTable,
+    EventTimeline,
+    SalesGraph,
+    StatisticCard
   },
   data() {
     return {
+      employees: employeesData,
+      sales: salesData,
       selectedEmployee: {
-          name: '', title: ''
+        name: '',
+        title: ''
       },
       snackbar: false,
-      headers: [
-        {
-          text: "Employee Id",
-          align: "left",
-          sortable: true,
-          value: "id",
-        },
-        { text: "Name", value: "name", sortable: true },
-        { text: "Job Title", value: "title", sortable: true },
-        { text: "Salary", value: "salary", sortable: true },
-      ],
-      employees: employeesData,
-    };
+      statistics: statisticsData,
+      timeline: timelineData
+    }
   },
-};
+  methods: {
+    setEmployee(event) {
+      this.snackbar = true
+      this.selectedEmployee.name = event.name
+      this.selectedEmployee.title = event.title
+    }
+  }
+}
 </script>
-
-<style lang="scss" scoped></style>
