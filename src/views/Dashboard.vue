@@ -3,66 +3,49 @@
     <h1>Dashboard</h1>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="employees"
       :items-per-page="5"
       class="elavation-1"
       @click:row="selectRow"
     >
     </v-data-table>
     <v-snackbar v-model="snackbar"
-      >You have selected {{ currentItem }}
+      >You have selected {{ selectedEmployee.name }} ({{ selectedEmployee.title }})
       <v-btn color="pink" text @click="snackbar = false">Close</v-btn>
     </v-snackbar>
   </div>
 </template>
 
 <script>
+import employeesData from '@/data/employees.json'
+
 export default {
   name: "DashboardPage",
   methods: {
     selectRow(event) {
       this.snackbar = true;
-      this.currentItem = event.name;
+      this.selectedEmployee.name = event.name;
+      this.selectedEmployee.title = event.title;
     },
   },
   data() {
     return {
-      currentItem: "",
+      selectedEmployee: {
+          name: '', title: ''
+      },
       snackbar: false,
       headers: [
         {
-          text: "Dessert (100g serving)",
+          text: "Employee Id",
           align: "left",
-          sortable: false,
-          value: "name",
+          sortable: true,
+          value: "id",
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
+        { text: "Name", value: "name", sortable: true },
+        { text: "Job Title", value: "title", sortable: true },
+        { text: "Salary", value: "salary", sortable: true },
       ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        // The rest of the data was removed
-        // to shorten the length of the code sample
-        // in this article
-      ],
+      employees: employeesData,
     };
   },
 };
